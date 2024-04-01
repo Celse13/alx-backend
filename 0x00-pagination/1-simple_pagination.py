@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-""" Implementation of simple pagination"""
+""" module doc """
 from typing import Tuple
 
 
