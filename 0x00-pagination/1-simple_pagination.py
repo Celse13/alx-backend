@@ -4,7 +4,7 @@ from typing import Tuple
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
-    """ Pagination by the index"""
-    starting_index = (page - 1) * page_size
-    ending_index = page * page_size
-    return (starting_index, ending_index)
+    """ function doc """
+    startPage = (page - 1) * page_size
+    endPage = page * page_size
+    return (startPage, endPage)
