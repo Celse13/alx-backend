@@ -1,38 +1,37 @@
 #!/usr/bin/env python3
-""" module doc """
+""" Implementation of simple pagination"""
+from typing import Tuple, List
 import csv
 import math
-from typing import List, Tuple
 
 
 class Server:
-    """Server class to paginate a database of popular baby names."""
+    """ This class will aid in pagination of the server"""
+    CSV_FILE = "Popular_Baby_Names.csv"
 
-    DATA_FILE = "Popular_Baby_Names.csv"
-
-    def __init__(self):
-        """ func doc """
+    def __init__(self) -> None:
+        """ Constructor for the class"""
         self.__dataset = None
 
-    def dataset(self) -> List[List]:
-        """Cached dataset"""
-        if self.__dataset is None:
-            with open(self.DATA_FILE) as f:
-                reader = csv.reader(f)
-                dataset = [row for row in reader]
+    def dataset(self) -> list[list]:
+        """ Storing pagination data"""
+        if self.dataset is None:
+            with open(self.CSV_FILE) as file:
+                read_from_file = csv.reader(file)
+                dataset = [row for row in read_from_file]
             self.__dataset = dataset[1:]
 
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """Get page from the dataset"""
+        """ Getting the page"""
         assert isinstance(page, int) and isinstance(page_size, int)
         assert page > 0 and page_size > 0
-        start, end = self.index_range(page, page_size)
-        return self.dataset()[start:end]
+        starting_page, ending_page = self.index_range(page, page_size)
+        return self.dataset()[starting_page:ending_page]
 
-    def index_range(self, page: int, page_size: int) -> Tuple[int, int]:
-        """function doc"""
-        startPage = (page - 1) * page_size
-        endPage = page * page_size
-        return (startPage, endPage)
+    def index_range(page: int, page_size: int) -> Tuple[int, int]:
+        """ Pagination by the index"""
+        starting_index = (page - 1) * page_size
+        ending_index = page * page_size
+        return (starting_index, ending_index)
