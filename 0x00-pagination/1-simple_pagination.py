@@ -1,37 +1,38 @@
 #!/usr/bin/env python3
-""" Implementation of simple pagination"""
-from typing import Tuple, List
+""" module doc """
 import csv
-
-
-def index_range(page: int, page_size: int) -> Tuple[int, int]:
-    """ Pagination by the index"""
-    starting_index = (page - 1) * page_size
-    ending_index = page * page_size
-    return (starting_index, ending_index)
+import math
+from typing import List, Tuple
 
 
 class Server:
-    """ This class will aid in pagination of the server"""
-    CSV_FILE = "Popular_Baby_Names.csv"
+    """Server class to paginate a database of popular baby names."""
 
-    def __init__(self) -> None:
-        """ Constructor for the class"""
+    DATA_FILE = "Popular_Baby_Names.csv"
+
+    def __init__(self):
+        """ func doc """
         self.__dataset = None
 
-    def dataset(self) -> list[list]:
-        """ Storing pagination data"""
-        if self.dataset is None:
-            with open(self.CSV_FILE) as file:
-                read_from_file = csv.reader(file)
-                dataset = [row for row in read_from_file]
+    def dataset(self) -> List[List]:
+        """Cached dataset"""
+        if self.__dataset is None:
+            with open(self.DATA_FILE) as f:
+                reader = csv.reader(f)
+                dataset = [row for row in reader]
             self.__dataset = dataset[1:]
 
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """ Getting the page"""
+        """Get page from the dataset"""
         assert isinstance(page, int) and isinstance(page_size, int)
         assert page > 0 and page_size > 0
-        starting_page, ending_page = index_range(page, page_size)
-        return self.dataset()[starting_page:ending_page]
+        start, end = self.index_range(page, page_size)
+        return self.dataset()[start:end]
+
+    def index_range(self, page: int, page_size: int) -> Tuple[int, int]:
+        """function doc"""
+        startPage = (page - 1) * page_size
+        endPage = page * page_size
+        return (startPage, endPage)
