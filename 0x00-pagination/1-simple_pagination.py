@@ -31,8 +31,8 @@ class Server:
         starting_page, ending_page = self.index_range(page, page_size)
         return self.dataset()[starting_page:ending_page]
 
-    def index_range(page: int, page_size: int) -> Tuple[int, int]:
-        """ Pagination by the index"""
-        starting_index = (page - 1) * page_size
-        ending_index = page * page_size
-        return (starting_index, ending_index)
+    def index_range(self, page: int, page_size: int) -> Tuple[int, int]:
+        """function doc"""
+        startPage = (page - 1) * page_size
+        endPage = page * page_size
+        return (startPage, endPage)
