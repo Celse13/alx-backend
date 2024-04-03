@@ -1,25 +1,16 @@
 #!/usr/bin/python3
-""" Caching """
+""" doc doc doc """
+BaseCaching = __import__("base_caching").BaseCaching
 
 
-class BaseCaching:
-    """ BaseCaching class """
-
-    def __init__(self):
-        """ Constructor """
-        self.cache_data = {}
-
-
-class BasicCache (BaseCaching):
-    """ BaseCache class """
+class BasicCache(BaseCaching):
+    """doc doc doc"""
 
     def put(self, key, item):
-        """ add an item in a cache"""
-        if key is not None and item is not None:
+        """doc doc doc"""
+        if key and item:
             self.cache_data[key] = item
 
     def get(self, key):
-        """ Get an item by key """
-        if key is None or key not in self.cache_data:
-            return None
-        return self.cache_data[key]
+        """doc doc doc"""
+        return self.cache_data.get(key)
