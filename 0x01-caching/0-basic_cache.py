@@ -10,7 +10,7 @@ class BaseCaching:
         self.cache_data = {}
 
 
-class BaseCache(BaseCaching):
+class BasicCache (BaseCaching):
     """ BaseCache class """
 
     def put(self, key, item):
