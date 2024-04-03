@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-""" Implementation of simple pagination"""
+"""implementation of the simple pagination
+"""
+from typing import Tuple
 
 
-def index_range(page, page_size):
-    """ Pagination by the index"""
-    starting_index = (page - 1) * page_size
-    ending_index = page * page_size
-    return starting_index, ending_index
-  
+def index_range(page: int, page_size: int) -> Tuple[int, int]:
+    """Pagination by the index
+    """
+    return ((page - 1) * page_size, page * page_size)
