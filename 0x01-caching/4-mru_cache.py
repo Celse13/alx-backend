@@ -1,40 +1,37 @@
 #!/usr/bin/python3
-""" doc doc doc """
+""" Caching System """
+from collections import Counter
 BaseCaching = __import__("base_caching").BaseCaching
 
 
 class LFUCache(BaseCaching):
-    """doc doc doc"""
-
     def __init__(self):
-        """doc doc doc"""
         super().__init__()
-        self.freq = {}
+        self.frequency = Counter()
+        self.timestamp = {}
 
     def put(self, key, item):
-        """doc doc doc"""
-        if key is None or item is None:
-            return
-
-        if key in self.cache_data:
-            self.cache_data[key] = item
-            self.freq[key] += 1
-        else:
-            if len(self.cache_data) >= self.MAX_ITEMS:
-                min_freq = min(self.freq.values())
+        if key is not None and item is not None:
+            if len(
+                    self.cache_data) >= self.MAX_ITEMS and key not in self.cache_data:
+                least_freq = min(self.frequency.values())
                 least_freq_keys = [
-                    k for k, v in self.freq.items() if v == min_freq
-                ]
-                lfu_key = min(least_freq_keys, key=self.freq.get)
-                self.cache_data.pop(lfu_key)
-                self.freq.pop(lfu_key)
-                print("DISCARD:", lfu_key)
-
+                    k for k, v in self.frequency.items() if v == least_freq]
+                if len(least_freq_keys) > 1:
+                    lru_key = min(least_freq_keys, key=self.timestamp.get)
+                else:
+                    lru_key = least_freq_keys[0]
+                del self.cache_data[lru_key]
+                del self.frequency[lru_key]
+                del self.timestamp[lru_key]
+                print(f"DISCARD: {lru_key}")
             self.cache_data[key] = item
-            self.freq[key] = 1
+            self.frequency[key] += 1
+            self.timestamp[key] = len(self.timestamp)
 
     def get(self, key):
-        """doc doc doc"""
-        if key in self.cache_data:
-            self.freq[key] += 1
-            return self.cache_data.get(key)
+        if key is None or key not in self.cache_data:
+            return None
+        self.frequency[key] += 1
+        self.timestamp[key] = len(self.timestamp)
+        return self.cache_data[key]
