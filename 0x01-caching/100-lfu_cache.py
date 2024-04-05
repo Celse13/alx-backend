@@ -1,37 +1,73 @@
-#!/usr/bin/python3
-""" Caching System """
-from collections import Counter
-BaseCaching = __import__("base_caching").BaseCaching
+#!/usr/bin/env python3
+"""5. LFU Caching
+"""
+from collections import OrderedDict
+BaseCaching = __import__('base_caching').BaseCaching
 
 
 class LFUCache(BaseCaching):
+    """Least Frequently Used Cache Method
+    """
     def __init__(self):
+        """init method
+        """
         super().__init__()
-        self.frequency = Counter()
-        self.timestamp = {}
+        self.cache_data = OrderedDict()
+        self.usage_counts = {}
+        self.least_freq_used = None
 
     def put(self, key, item):
-        if key is not None and item is not None:
-            if len(
-                    self.cache_data) >= self.MAX_ITEMS and key not in self.cache_data:
-                least_freq = min(self.frequency.values())
-                least_freq_keys = [
-                    k for k, v in self.frequency.items() if v == least_freq]
-                if len(least_freq_keys) > 1:
-                    lru_key = min(least_freq_keys, key=self.timestamp.get)
-                else:
-                    lru_key = least_freq_keys[0]
-                del self.cache_data[lru_key]
-                del self.frequency[lru_key]
-                del self.timestamp[lru_key]
-                print(f"DISCARD: {lru_key}")
+        """adds cache to cache data
+        """
+        if key is None or item is None:
+            return
+
+        if key in self.cache_data:
             self.cache_data[key] = item
-            self.frequency[key] += 1
-            self.timestamp[key] = len(self.timestamp)
+            self.usage_counts[key] += 1
+        else:
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+                self.evict()
+            self.cache_data[key] = item
+            self.usage_counts[key] = 1
+
+        self.update_least_freq_used()
 
     def get(self, key):
+        """retrieves a cache data
+        """
         if key is None or key not in self.cache_data:
             return None
-        self.frequency[key] += 1
-        self.timestamp[key] = len(self.timestamp)
+        self.usage_counts[key] += 1
+        self.update_least_freq_used()
         return self.cache_data[key]
+
+    def evict(self):
+        """check for cache data used less frequently
+        """
+        if not self.cache_data:
+            return
+
+        least_used = min(self.usage_counts.values())
+        candidates = [k for k, v in self.usage_counts.items()
+                      if v == least_used]
+
+        if len(candidates) > 1:
+            # Apply LRU policy among the candidates
+            for key in self.cache_data:
+                if key in candidates:
+                    evict_key = key
+                    break
+        else:
+            evict_key = candidates[0]
+
+        print(f'DISCARD: {evict_key}')
+        del self.cache_data[evict_key]
+        del self.usage_counts[evict_key]
+
+    def update_least_freq_used(self):
+        """updates the number of frequency used
+        """
+        least_used = min(self.usage_counts.values())
+        self.least_freq_used = [k for k, v in self.usage_counts.items()
+                                if v == least_used]
