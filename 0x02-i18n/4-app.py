@@ -2,11 +2,11 @@
 """ doc doc doc """
 from flask import Flask, render_template, request
 from flask_babel import Babel
-from flask_babel import _
 
 
 class Config(object):
-    """Configurations for Babel module."""
+    """doc doc doc"""
+
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
     BABEL_DEFAULT_TIMEZONE = "UTC"
@@ -18,18 +18,17 @@ babel = Babel(app)
 
 
 @babel.localeselector
-def get_locale():
-    '''Get locale from request URL.'''
-    locale = request.args.get("locale")
-    if locale and locale in app.config["LANGUAGES"]:
-        return locale
+def get_locale() -> str:
+    """ doc doc doc """
+    if request.args.get("locale") in app.config["LANGUAGES"]:
+        return request.args.get("locale")
     return request.accept_languages.best_match(app.config["LANGUAGES"])
 
 
 @app.route("/")
-def message():
-    """Displaying the welcoming message """
-    return render_template("3-index.html")
+def index() -> str:
+    """doc doc doc"""
+    return render_template("4-index.html")
 
 
 if __name__ == "__main__":
